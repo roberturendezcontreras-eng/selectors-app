@@ -403,6 +403,7 @@ function App() {
     return `${d}-${m}-${y}`;
   };
 
+    // Trigger redeploy for neon logo
   const send = (e: React.FormEvent) => {
     e.preventDefault();
     setSent(true);
