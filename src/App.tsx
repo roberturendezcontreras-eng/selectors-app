@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+const API_EB = "4FZBXCGPGPHNCNUSTWWN";
 
 // --- 1. DEFINICIÓN DE TIPOS (ESTO ARREGLA LOS ERRORES ROJOS) ---
 interface Image {
