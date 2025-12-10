@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 const API_EB = "4FZBXCGPGPHNCNUSTWWN";
+const API_TICKETMASTER = "YOUR_TICKETMASTER_KEY"; // Obtén tu clave en https://developer.ticketmaster.com/
 
 // --- 1. DEFINICIÓN DE TIPOS (ESTO ARREGLA LOS ERRORES ROJOS) ---
 interface Image {
@@ -197,6 +198,8 @@ const MOCK_INDIE: Evento[] = [
 const LegendTribute = () => {
   const [msg, setMsg] = useState("");
   const [sent, setSent] = useState(false);
+  const [eventosMusica, setEventosMusica] = useState<any[]>([]);
+  const [cargandoEventos, setCargandoEventos] = useState(false);
 
   const sendGoodbye = (e: React.FormEvent) => {
     e.preventDefault();
@@ -570,6 +573,57 @@ function App() {
       </section>
     </div>
   );
+}
+
+// FUNCIONES PARA OBTENER EVENTOS DE TICKETMASTER Y EVENTBRITE
+// Obtener eventos de Ticketmaster
+async function fetchTicketmasterEvents() {
+  try {
+    const url = `https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&countryCode=ES&size=50&apikey=${API_TICKETMASTER}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data._embedded?.events) {
+      return data._embedded.events.map((event: any) => ({
+        id: event.id,
+        nombre: event.name,
+        fecha: event.dates?.start?.localDate || "N/A",
+        lugar: event._embedded?.venues?.[0]?.name || "N/A",
+        ciudad: event._embedded?.venues?.[0]?.city?.name || "N/A",
+        imagen: event.images?.[0]?.url || "",
+        url: event.url || "#",
+        plataforma: "Ticketmaster",
+      }));
+    }
+    return [];
+  } catch (error) {
+    console.log("Ticketmaster API - Necesita clave válida");
+    return [];
+  }
+}
+
+// Obtener eventos de Eventbrite
+async function fetchEventbriteEvents() {
+  try {
+    const url = `https://www.eventbriteapi.com/v3/events/search/?q=musica&location.address=Spain&token=${API_EB}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.events) {
+      return data.events.map((event: any) => ({
+        id: event.id,
+        nombre: event.name.text,
+        fecha: event.start?.local?.split("T")[0] || "N/A",
+        lugar: event.venue?.name || "N/A",
+        ciudad: event.venue?.address?.city || "N/A",
+        imagen: event.logo?.url || "",
+        url: event.url || "#",
+        plataforma: "Eventbrite",
+      }));
+    }
+    return [];
+  } catch (error) {
+    console.log("Eventbrite API - Conectando...");
+    return [];
+  }
 }
 
 export default App;
