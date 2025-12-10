@@ -413,10 +413,19 @@ function App() {
     <div className="main-container">
       <header className="dashboard-header">
         <div className="brand-area">
-          <h1>
-            <span style={{ color: "#fce300" }}>⚡</span>SELECTORS
-            <span style={{ color: "#00f3ff" }}>.</span>
-          </h1>
+          <<h1 style={{
+                color: '#c5ff00',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '4rem',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5rem',
+                textShadow: '0 0 10px #c5ff00, 0 0 20px #c5ff00, 0 0 30px #c5ff00, 0 0 40px #c5ff00, 0 0 50px #c5ff00, 0 0 60px #c5ff00, 0 0 70px #c5ff00',
+                WebkitTextStroke: '2px #fff',
+                margin: '0'
+              }}>
+                SELECTORS
+              </h1>
           <div className="subtitle">LA INTELIGENCIA MUSICAL EN VIVO</div>
         </div>
         {activeTab === "conciertos" && (
