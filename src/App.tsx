@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 const API_EB = "4FZBXCGPGPHNCNUSTWWN";
 const API_TICKETMASTER = "YOUR_TICKETMASTER_KEY"; // Obtén tu clave en https://developer.ticketmaster.com/
+import EventbriteIntegration from "./EventbriteIntegration";
 
 // --- 1. DEFINICIÓN DE TIPOS (ESTO ARREGLA LOS ERRORES ROJOS) ---
 interface Image {
@@ -403,7 +404,7 @@ function App() {
     return `${d}-${m}-${y}`;
   };
 
-    // Trigger redeploy for neon logo
+  // Trigger redeploy for neon logo
   const send = (e: React.FormEvent) => {
     e.preventDefault();
     setSent(true);
@@ -411,177 +412,170 @@ function App() {
   };
 
   return (
-    <div className="main-container">
-      <header className="dashboard-header">
-        <div className="brand-area">
-          <<h1 style={{
-                color: '#c5ff00',
-                fontFamily: 'Arial, sans-serif',
-                fontSize: '4rem',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5rem',
-                textShadow: '0 0 10px #c5ff00, 0 0 20px #c5ff00, 0 0 30px #c5ff00, 0 0 40px #c5ff00, 0 0 50px #c5ff00, 0 0 60px #c5ff00, 0 0 70px #c5ff00',
-                WebkitTextStroke: '2px #fff',
-                margin: '0'
-              }}>
-                SELECTORS
-              </h1>
+    <>
+      <div className="main-container">
+        <header className="dashboard-header">
           <div className="subtitle">LA INTELIGENCIA MUSICAL EN VIVO</div>
-        </div>
+          {activeTab === "conciertos" && (
+            <div className="filter-stack">
+              <select
+                className="cyber-select"
+                onChange={(e) =>
+                  setFiltros({ ...filtros, city: e.target.value })
+                }
+              >
+                <option value="TODAS">CIUDAD: TODA ESPAÑA</option>
+                <option value="Barcelona">BARCELONA</option>
+                <option value="Madrid">MADRID</option>
+                <option value="Valencia">VALENCIA</option>
+                <option value="Bilbao">BILBAO</option>
+                <option value="Sevilla">SEVILLA</option>
+              </select>
+              <select
+                className="cyber-select"
+                onChange={(e) =>
+                  setFiltros({ ...filtros, genre: e.target.value })
+                }
+              >
+                <option value="TODOS">GÉNERO: TODOS</option>
+                <option value="ROCK">ROCK / METAL</option>
+                <option value="INDIE">INDIE / ALT</option>
+                <option value="ELECTRONICA">ELECTRÓNICA</option>
+                <option value="URBANA">URBANO / TRAP</option>
+                <option value="POP">POP</option>
+              </select>
+              <select
+                className="cyber-select"
+                onChange={(e) =>
+                  setFiltros({ ...filtros, month: e.target.value })
+                }
+              >
+                <option value="TODOS">FECHA: CUALQUIERA</option>
+                <option value="1">ENERO</option>
+                <option value="2">FEBRERO</option>
+                <option value="3">MARZO</option>
+                <option value="4">ABRIL</option>
+                <option value="5">MAYO</option>
+                <option value="6">JUNIO</option>
+                <option value="7">JULIO</option>
+                <option value="8">AGOSTO</option>
+                <option value="9">SEPTIEMBRE</option>
+                <option value="10">OCTUBRE</option>
+                <option value="11">NOVIEMBRE</option>
+                <option value="12">DICIEMBRE</option>
+              </select>
+            </div>
+          )}
+        </header>
+
+        <nav className="nav-tabs">
+          <button className={`tab-btn active`}>CONCIERTOS</button>
+        </nav>
+
         {activeTab === "conciertos" && (
-          <div className="filter-stack">
-            <select
-              className="cyber-select"
-              onChange={(e) => setFiltros({ ...filtros, city: e.target.value })}
-            >
-              <option value="TODAS">CIUDAD: TODA ESPAÑA</option>
-              <option value="Barcelona">BARCELONA</option>
-              <option value="Madrid">MADRID</option>
-              <option value="Valencia">VALENCIA</option>
-              <option value="Bilbao">BILBAO</option>
-              <option value="Sevilla">SEVILLA</option>
-            </select>
-            <select
-              className="cyber-select"
-              onChange={(e) =>
-                setFiltros({ ...filtros, genre: e.target.value })
-              }
-            >
-              <option value="TODOS">GÉNERO: TODOS</option>
-              <option value="ROCK">ROCK / METAL</option>
-              <option value="INDIE">INDIE / ALT</option>
-              <option value="ELECTRONICA">ELECTRÓNICA</option>
-              <option value="URBANA">URBANO / TRAP</option>
-              <option value="POP">POP</option>
-            </select>
-            <select
-              className="cyber-select"
-              onChange={(e) =>
-                setFiltros({ ...filtros, month: e.target.value })
-              }
-            >
-              <option value="TODOS">FECHA: CUALQUIERA</option>
-              <option value="1">ENERO</option>
-              <option value="2">FEBRERO</option>
-              <option value="3">MARZO</option>
-              <option value="4">ABRIL</option>
-              <option value="5">MAYO</option>
-              <option value="6">JUNIO</option>
-              <option value="7">JULIO</option>
-              <option value="8">AGOSTO</option>
-              <option value="9">SEPTIEMBRE</option>
-              <option value="10">OCTUBRE</option>
-              <option value="11">NOVIEMBRE</option>
-              <option value="12">DICIEMBRE</option>
-            </select>
-          </div>
-        )}
-      </header>
-
-      <nav className="nav-tabs">
-        <button className={`tab-btn active`}>CONCIERTOS</button>
-      </nav>
-
-      {activeTab === "conciertos" && (
-        <>
-          <LegendTribute />
-          <div className="section-spacer">
-            <div
-              className="section-label"
-              style={{ background: "var(--neon-green)" }}
-            >
-              PRÓXIMOS CONCIERTOS ({filtered.length})
-            </div>
-            <div className="concert-grid">
-              {filtered.map((e) => (
-                <article key={e.id} className="card">
-                  <div className="date-tag">
-                    {formatearFecha(e.dates.start.localDate)}
-                  </div>
-                  <img
-                    src={
-                      e.images.find((i: any) => i.width > 600)?.url ||
-                      e.images[0]?.url
-                    }
-                    className="card-image"
-                    alt={e.name}
-                  />
-                  <div className="card-info">
-                    <h3>{e.name}</h3>
-                    <div className="venue">
-                      📍 {e._embedded?.venues?.[0]?.name}
+          <>
+            <LegendTribute />
+            <div className="section-spacer">
+              <div
+                className="section-label"
+                style={{ background: "var(--neon-green)" }}
+              >
+                PRÓXIMOS CONCIERTOS ({filtered.length})
+              </div>
+              <div className="concert-grid">
+                {filtered.map((e) => (
+                  <article key={e.id} className="card">
+                    <div className="date-tag">
+                      {formatearFecha(e.dates.start.localDate)}
                     </div>
-                    <a
-                      href={e.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="buy-btn-green"
-                    >
-                      ENTRADAS -&gt;
-                    </a>
-                  </div>
-                </article>
-              ))}
+                    <img
+                      src={
+                        e.images.find((i: any) => i.width > 600)?.url ||
+                        e.images[0]?.url
+                      }
+                      className="card-image"
+                      alt={e.name}
+                    />
+                    <div className="card-info">
+                      <h3>{e.name}</h3>
+                      <div className="venue">
+                        📍 {e._embedded?.venues?.[0]?.name}
+                      </div>
+                      <a
+                        href={e.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="buy-btn-green"
+                      >
+                        ENTRADAS -&gt;
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-
-      <section className="subscribe-section" style={{ borderColor: "#00f3ff" }}>
-        <h2 style={{ fontSize: "3rem", margin: "0 0 20px 0", lineHeight: 1 }}>
-          SISTEMA <span style={{ color: "var(--neon-blue)" }}>RADAR</span>
-        </h2>
-        <p style={{ color: "#888", marginBottom: "30px" }}>
-          TE AVISAMOS CUANDO TUS ARTISTAS FAVORITOS ANUNCIEN GIRA.
-        </p>
-        {!sent ? (
-          <form onSubmit={send}>
-            <input
-              type="text"
-              placeholder="TU NOMBRE"
-              required
-              onChange={(e) => setForm({ ...form, nom: e.target.value })}
-            />
-            <input
-              type="email"
-              placeholder="TU EMAIL"
-              required
-              onChange={(e) => setForm({ ...form, mail: e.target.value })}
-            />
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
-                gap: "10px",
-                marginTop: "10px",
-              }}
-            >
-              <input
-                className="input-artist"
-                placeholder="ARTISTA 1"
-                onChange={(e) => setForm({ ...form, a1: e.target.value })}
-              />
-              <input
-                className="input-artist"
-                placeholder="ARTISTA 2"
-                onChange={(e) => setForm({ ...form, a2: e.target.value })}
-              />
-              <input
-                className="input-artist"
-                placeholder="ARTISTA 3"
-                onChange={(e) => setForm({ ...form, a3: e.target.value })}
-              />
-            </div>
-            <button className="form-btn" style={{ background: "#00f3ff" }}>
-              ACTIVAR RASTREO
-            </button>
-          </form>
-        ) : (
-          <div className="success-msg">✅ RADAR ACTIVADO</div>
+          </>
         )}
-      </section>
-    </div>
+
+        <section
+          className="subscribe-section"
+          style={{ borderColor: "#00f3ff" }}
+        >
+          <h2 style={{ fontSize: "3rem", margin: "0 0 20px 0", lineHeight: 1 }}>
+            SISTEMA <span style={{ color: "var(--neon-blue)" }}>RADAR</span>
+          </h2>
+          <p style={{ color: "#888", marginBottom: "30px" }}>
+            TE AVISAMOS CUANDO TUS ARTISTAS FAVORITOS ANUNCIEN GIRA.
+          </p>
+          {!sent ? (
+            <form onSubmit={send}>
+              <input
+                type="text"
+                placeholder="TU NOMBRE"
+                required
+                onChange={(e) => setForm({ ...form, nom: e.target.value })}
+              />
+              <input
+                type="email"
+                placeholder="TU EMAIL"
+                required
+                onChange={(e) => setForm({ ...form, mail: e.target.value })}
+              />
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "10px",
+                  marginTop: "10px",
+                }}
+              >
+                <input
+                  className="input-artist"
+                  placeholder="ARTISTA 1"
+                  onChange={(e) => setForm({ ...form, a1: e.target.value })}
+                />
+                <input
+                  className="input-artist"
+                  placeholder="ARTISTA 2"
+                  onChange={(e) => setForm({ ...form, a2: e.target.value })}
+                />
+                <input
+                  className="input-artist"
+                  placeholder="ARTISTA 3"
+                  onChange={(e) => setForm({ ...form, a3: e.target.value })}
+                />
+              </div>
+              <button className="form-btn" style={{ background: "#00f3ff" }}>
+                ACTIVAR RASTREO
+              </button>
+            </form>
+          ) : (
+            <div className="success-msg">✅ RADAR ACTIVADO</div>
+          )}
+        </section>
+      </div>
+      <EventbriteIntegration city="Madrid" query="concierto" />
+    </>
   );
 }
 
