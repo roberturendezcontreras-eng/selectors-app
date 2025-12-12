@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 const API_EB = "4FZBXCGPGPHNCNUSTWWN";
 const API_TICKETMASTER = "YOUR_TICKETMASTER_KEY"; // Obtén tu clave en https://developer.ticketmaster.com/
-import EventbriteIntegration from "./EventbriteIntegration";
+import EventAggregator from "./EventAggregator";
 
 // --- 1. DEFINICIÓN DE TIPOS (ESTO ARREGLA LOS ERRORES ROJOS) ---
 interface Image {
@@ -574,7 +574,7 @@ function App() {
           )}
         </section>
       </div>
-      <EventbriteIntegration city="Madrid" query="concierto" />
+      <EventAggregator city="Madrid" query="concierto" />
     </>
   );
 }
